@@ -1,5 +1,3 @@
-# tcc_bd
-
 -- drop database ecommerce_carros;
 
 create database ecommerce_carros;
@@ -81,7 +79,31 @@ INSERT INTO carros (id_carro, modelo, marca, ano, preco, id_categoria, carregado
 (8, 'Model 3', 'Tesla', 2019, 100000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/model3.jpg', 'branco'),
 (9, 'i3', 'BMW', 2018, 80000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro..', 'imagens/i3.jpg', 'azul'); 
 
+select * from carros;
+create table CarrinhoCompra (
+	id_cliente int not null,
+    id_carro int,
+    modelo varchar(50) not null,
+    marca varchar(50) not null,
+    ano int not null,
+    preco decimal(10,2) not null,
+    id_categoria int not null,
+    carregador varchar(50) not null,
+    descricao varchar(300) not null,
+    imagem varchar(200) null,
+    cor varchar(20) not null,
+	QuantidadeProd int,
+    primary key(id_cliente, id_carro),
+	foreign key (id_cliente) references clientes(id_cliente),
+    foreign key (id_categoria) references categorias(id_categoria)
+);
 
+INSERT INTO CarrinhoCompra (id_cliente, id_carro, modelo, marca, ano, preco, id_categoria, carregador, descricao, imagem, cor, QuantidadeProd)
+VALUES 
+(1, 1, 'Prius', 'Toyota', 2022, 80000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/prius.jpg', 'preto', 2);
+use ecommerce_carros;
+select * from CarrinhoCompra;
+-- drop table CarrinhoCompra;
 create table pedidos (
     id_pedido int primary key,
     id_cliente int not null,
@@ -376,11 +398,13 @@ DELIMITER $$
 
 CREATE PROCEDURE ExibirCarros()
 BEGIN
-    SELECT c.id_carro, c.modelo, c.marca, c.ano, c.preco, cat.descricao AS categoria
+    SELECT c.id_carro, c.modelo, c.marca, c.ano, c.preco, cat.descricao AS categoria, c.carregador
     FROM carros c
     JOIN categorias cat ON c.id_categoria = cat.id_categoria;
 END $$
-call ExibirCarros();
+
+CALL ExibirCarros();
+
 
 DELIMITER $$
 
@@ -391,6 +415,28 @@ BEGIN
     JOIN categorias cat ON c.id_categoria = cat.id_categoria
     WHERE c.id_carro = p_id_carro;
 END $$
+
+drop procedure ExibirDetalhesCarro;
+DELIMITER $$
+
+CREATE PROCEDURE ExibirDetalhesCarro(IN p_id_carro INT)
+BEGIN
+    SELECT c.id_carro, 
+           c.modelo, 
+           c.marca, 
+           c.ano, 
+           c.preco, 
+           cat.descricao AS categoria, 
+           c.descricao, 
+           c.imagem, 
+           c.cor,
+           c.carregador  -- Adicionado o carregador
+    FROM carros c
+    JOIN categorias cat ON c.id_categoria = cat.id_categoria
+    WHERE c.id_carro = p_id_carro;
+END $$
+
+CALL ExibirDetalhesCarro(1);
 
 call ExibirDetalhesCarro(1);
 
