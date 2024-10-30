@@ -1452,3 +1452,88 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+DELIMITER //
+CREATE PROCEDURE spObterPedidosEItensCliente(
+    IN cliente_id INT
+)
+BEGIN
+    SELECT 
+        p.id_pedido,
+        p.data_pedido,
+        p.valor_total,
+        p.status_pedido,
+        i.id_item_pedido,
+        i.id_carro,
+        i.quantidade,
+        i.preco_unitario,
+        c.modelo AS modelo_carro,
+        c.marca AS marca_carro,
+        c.ano AS ano_carro,
+        c.cor AS cor_carro,
+        c.status_carro
+    FROM 
+        pedidos p
+    INNER JOIN 
+        itens_pedidos i ON p.id_pedido = i.id_pedido
+    INNER JOIN 
+        carros c ON i.id_carro = c.id_carro
+    WHERE 
+        p.id_cliente = cliente_id
+    ORDER BY 
+        p.data_pedido DESC;
+    
+END //
+
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE spObterDetalhesPedidoPorID(IN p_idPedido INT)
+BEGIN
+    SELECT 
+        p.id_pedido, 
+        p.data_pedido, 
+        p.valor_total, 
+        p.status_pedido,
+        c.nome AS NomeCliente, 
+        c.sobrenome AS SobrenomeCliente,
+        c.email,
+        c.telefone,
+        ip.id_item_pedido, 
+        ip.id_carro, 
+        ip.quantidade, 
+        ip.preco_unitario, 
+        car.modelo, 
+        car.marca,
+        car.ano,
+        car.cor,
+        car.imagem,
+        e.logradouro, 
+        e.cep, 
+        b.bairro AS BairroNome, 
+        ci.cidade AS CidadeNome, 
+        uf.uf AS UFNome
+    FROM 
+        pedidos AS p
+    JOIN 
+        clientes AS c ON p.id_cliente = c.id_cliente
+    LEFT JOIN 
+        itens_pedidos AS ip ON p.id_pedido = ip.id_pedido
+    LEFT JOIN 
+        carros AS car ON ip.id_carro = car.id_carro
+    LEFT JOIN 
+        tbEntrega AS e ON p.id_pedido = e.IdPedido
+    LEFT JOIN 
+        tbBairro AS b ON e.BairroID = b.BairroID
+    LEFT JOIN 
+        tbCidade AS ci ON e.CidadeID = ci.CidadeID
+    LEFT JOIN 
+        tbEstado AS uf ON e.UFID = uf.UFID
+    WHERE 
+        p.id_pedido = p_idPedido;
+END //
+
+DELIMITER ;
+
+
+
