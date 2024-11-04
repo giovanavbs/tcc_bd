@@ -1535,5 +1535,48 @@ END //
 
 DELIMITER ;
 
+-- procedures de avaliação 
 
+DELIMITER //
+CREATE PROCEDURE spInserirAvaliacao(
+    IN p_id_pedido INT,
+    IN p_id_cliente INT,
+    IN p_avaliacao_escrita VARCHAR(300),
+    IN p_avaliacao_nota DECIMAL(3,2)
+)
+BEGIN
+    INSERT INTO avaliacoes (id_cliente, id_pedido, avaliacao_escrita, avaliacao_nota, data_avaliacao)
+    VALUES (p_id_cliente, p_id_pedido, p_avaliacao_escrita, p_avaliacao_nota, NOW());
+END //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE spObterAvaliacaoPorPedido(IN p_id_pedido INT)
+BEGIN
+    SELECT 
+        a.id_avaliacao,
+        c.nome,
+        c.sobrenome,
+        a.avaliacao_escrita,
+        a.avaliacao_nota,
+        a.data_avaliacao,
+        i.quantidade,
+        car.marca,
+        car.modelo,
+        car.ano
+    FROM 
+        avaliacoes a
+    JOIN 
+        clientes c ON a.id_cliente = c.id_cliente
+    JOIN 
+        pedidos p ON a.id_pedido = p.id_pedido
+    JOIN 
+        itens_pedidos i ON p.id_pedido = i.id_pedido
+    JOIN 
+        carros car ON i.id_carro = car.id_carro
+    WHERE 
+        p.id_pedido = p_id_pedido;
+END //
+DELIMITER ;
 
