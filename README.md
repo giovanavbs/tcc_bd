@@ -145,7 +145,7 @@ create table cartoes (
 -- -- formato pix=1234567 no atributo forma_pagamento (para evitar repetições criando um atributo cod_pix, pois ja tem repetição no id_cartao q nao pode ser eliminado)
 create table FormaPagamento (
     id_pedido int not null,
-    forma_pagamento varchar(50) not null, 
+    forma_pagamento varchar(200) not null, 
     id_cartao int,
     valor_pago decimal(10,2) not null,
     primary key(id_pedido),
@@ -153,7 +153,6 @@ create table FormaPagamento (
     foreign key (id_cartao) references cartoes(id_cartao)
 );
 
-select * from FormaPagamento;
 create table NotaFiscal (
     id_nota_fiscal int auto_increment primary key,
     id_pagamento int not null,
@@ -943,7 +942,6 @@ END //
 DELIMITER ;
 
 call spExibirTestDrive(1, 1);
-
 DELIMITER //
 CREATE PROCEDURE spExibirTestDrive(IN p_id_cliente INT, IN p_id_test INT)
 BEGIN
@@ -955,7 +953,8 @@ BEGIN
         c.modelo AS modelo_carro,
         c.marca AS marca_carro,
         c.cor AS cor_carro,
-        c.preco AS preco_carro
+        c.preco AS preco_carro,
+        c.imagem AS imagem_carro
     FROM 
         test_drive td
     INNER JOIN 
