@@ -1,4 +1,4 @@
--- drop database ecommerce_carros;
+-- tabelas
 create database ecommerce_carros;
 use ecommerce_carros;
 
@@ -47,7 +47,6 @@ create table clientes (
     foreign key (CepCli) references tbEndereco(CEP)  
 );
 
-
 create table categorias (
     id_categoria int primary key,
     descricao varchar(50) not null
@@ -72,17 +71,16 @@ create table carros (
     foreign key (id_categoria) references categorias(id_categoria)
 );
 
--- carros pra inserir e testar o sistema // vou adicionar mais 3 atributos pra outras imagens no futuro
 INSERT INTO carros (id_carro, modelo, marca, ano, preco, id_categoria, carregador, descricao, imagem, cor) VALUES
-(1, 'Prius', 'Toyota', 2022, 80000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/prius.jpg', 'preto'),
-(2, 'Civic Hybrid', 'Honda', 2021, 70000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/civic_hybrid.jpg', 'prata'),
-(3, 'Corolla Hybrid', 'Toyota', 2020, 65000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/corolla_hybrid.jpg', 'branco'),
-(4, 'Insight Hybrid', 'Honda', 2019, 60000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/insight_hybrid.jpg', 'azul'),
-(5, 'Auris Hybrid', 'Toyota', 2018, 55000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/auris_hybrid.jpg', 'prata'),
-(6, 'Leaf', 'Nissan', 2022, 90000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/leaf.jpg', 'vermelho'),
-(7, 'e-Golf', 'Volkswagen', 2021, 85000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/e_golf.jpg', 'preto'),
-(8, 'Model 3', 'Tesla', 2019, 100000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/model3.jpg', 'branco'),
-(9, 'i3', 'BMW', 2018, 80000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro..', 'imagens/i3.jpg', 'azul'); 
+(1, 'Prius', 'Toyota', 2022, 80000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro1.png', 'preto'),
+(2, 'Civic Hybrid', 'Honda', 2021, 70000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro2.png', 'prata'),
+(3, 'Corolla Hybrid', 'Toyota', 2020, 65000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro2.png', 'branco'),
+(4, 'Insight Hybrid', 'Honda', 2019, 60000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro3.png', 'azul'),
+(5, 'Auris Hybrid', 'Toyota', 2018, 55000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro4.png', 'prata'),
+(6, 'Leaf', 'Nissan', 2022, 90000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro5.png', 'vermelho'),
+(7, 'e-Golf', 'Volkswagen', 2021, 85000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro6.png', 'preto'),
+(8, 'Model 3', 'Tesla', 2019, 100000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'carro7.png', 'branco'),
+(9, 'i3', 'BMW', 2018, 80000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro..', 'carro8.png', 'azul'); 
 
 create table CarrinhoCompra (
 	id_cliente int not null,
@@ -110,7 +108,7 @@ create table pedidos (
     status_pedido varchar(50) not null,
     foreign key (id_cliente) references clientes(id_cliente)
 );
-select * from pedidos;
+
 create table itens_pedidos (
     id_item_pedido int primary key auto_increment,
     id_pedido int not null,
@@ -142,7 +140,6 @@ create table cartoes (
     foreign key (id_cliente) references clientes(id_cliente)
 );
 
--- -- formato pix=1234567 no atributo forma_pagamento (para evitar repetições criando um atributo cod_pix, pois ja tem repetição no id_cartao q nao pode ser eliminado)
 create table FormaPagamento (
     id_pedido int not null,
     forma_pagamento varchar(200) not null, 
@@ -196,10 +193,9 @@ CREATE TABLE tbEntrega (
     FOREIGN KEY (UFID) REFERENCES tbEstado(UFID)
 );
 
-select * from tbEntrega;
 -- fim das tabelas
 
--- procedures
+-- começo das procedures
 -- procedures do cliente 
 DELIMITER &&
 CREATE PROCEDURE spinsertCliente(
@@ -290,62 +286,6 @@ BEGIN
 END &&
 DELIMITER ;
 
--- testes de usuarios pra usar
-CALL spinsertCliente(
-    'geralt', 
-    'rivia', 
-    'geraltofrivia@gmail.com', 
-    'jaskier', 
-    999888777, 
-    'pf', 
-    12345678901,
-    98756723, 
-    234, 
-    'kaer morhen',
-    'montanha da neve', 
-    'centro', 
-    'polonia', 
-    'PL'
-);
-
-CALL spinsertCliente(
-    'peter', 
-    'parker', 
-    'peterparker@gmail.com', 
-    'spiderman', 
-    998877665, 
-    'pf', 
-    98765432100,
-    63290518, 
-    678, 
-    'Apto 89',
-    'rua do queens', 
-    'Queens', 
-    'Nova York', 
-    'NY'
-);
-
-CALL spinsertCliente(
-    'park', 
-    'jimin', 
-    'parkjimin@gmail.com', 
-    'bts', 
-    998877665, 
-    'pf', 
-    12312312345,
-    63290518, 
-    678, 
-    'Apto 89',
-    'rua do smeraldo', 
-    'Seoul', 
-    'South Korea', 
-    'SK'
-);
-
-
-select * from clientes;
-select * from login;
-
 DELIMITER &&
 CREATE PROCEDURE spUpdateCliente(
     vIdCliente INT,
@@ -420,29 +360,6 @@ BEGIN
 END &&
 DELIMITER ;
 
-
-select * from clientes;
-
-CALL spUpdateCliente(
-    3,  
-    'park',  
-    'jimin', 
-    'parkjimin@gmail.com', 
-    'ilovebts',  
-    998877665, 
-    'pf',  
-    12312312,  
-    678,  
-    'Apto 49',  
-    'rua do smeraldo',  
-    'Seoul',  
-    'South Korea',  
-    'SK', 
-    12312312345
-);
-
-
-call spObterClienteID(1);
 DELIMITER &&
 CREATE PROCEDURE spObterClienteID(
     vIdCliente INT
@@ -474,12 +391,6 @@ BEGIN
 END &&
 DELIMITER ;
 
-
-call spExcluirCliente(3);
-select * from clientes;
-
--- drop procedure spExcluirCliente;
-
 DELIMITER &&
 CREATE PROCEDURE spExcluirCliente(
     vIdCliente INT
@@ -500,9 +411,6 @@ END &&
 DELIMITER ;
 
 -- procedures de pedido
-
--- CALL RegistrarPedido(1);
-select * from pedidos;
 
 DELIMITER &&
 CREATE PROCEDURE RegistrarPedido(IN p_id_cliente INT)
@@ -538,18 +446,6 @@ BEGIN
 END &&
 DELIMITER ;
 
--- SET SQL_SAFE_UPDATES = 0; / para permitir que delete tudo de uma tabela
-
-INSERT INTO CarrinhoCompra (id_cliente, id_carro, modelo, marca, ano, preco, id_categoria, carregador, descricao, imagem, cor, QuantidadeProd) VALUES
-(1, 1, 'Prius', 'Toyota', 2022, 80000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/prius.jpg', 'preto', 1),
-(1, 6, 'Leaf', 'Nissan', 2022, 90000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/leaf.jpg', 'vermelho', 2);
-
-INSERT INTO CarrinhoCompra (id_cliente, id_carro, modelo, marca, ano, preco, id_categoria, carregador, descricao, imagem, cor, QuantidadeProd) VALUES
-(2, 3, 'Corolla Hybrid', 'Toyota', 2020, 65000.00, 1, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/corolla_hybrid.jpg', 'branco', 1),
-(2, 9, 'i3', 'BMW', 2018, 80000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro.', 'imagens/i3.jpg', 'azul', 1);
-
-call spObterPedidoRecentePorID(1);
-
 DELIMITER //
 CREATE PROCEDURE spObterPedidoRecentePorID(IN p_id_cliente INT)
 BEGIN
@@ -576,69 +472,6 @@ BEGIN
 END //
 DELIMITER ;
 
-/* DELIMITER //
-CREATE PROCEDURE spObterPedidoCompletoPorID(IN p_id_cliente INT)
-BEGIN
-    DECLARE v_id_pedido INT;
-    DECLARE v_valor_total DECIMAL(10,2);
-
-    -- pegar o id_pedido e valor_total do pedido mais recente
-    SELECT id_pedido, valor_total 
-    INTO v_id_pedido, v_valor_total
-    FROM pedidos 
-    WHERE id_cliente = p_id_cliente
-    ORDER BY id_pedido DESC -- ordem decrescente para pegar o maior id_pedido (mais recente)
-    LIMIT 1; 
-
-    -- se existir o pedido retorna os itens
-    IF v_id_pedido IS NOT NULL THEN
-        SELECT p.id_pedido, p.id_cliente, p.data_pedido, v_valor_total AS ValorTotal, 
-               ip.id_item_pedido, ip.id_carro, ip.quantidade, ip.preco_unitario
-        FROM pedidos p
-        INNER JOIN itens_pedidos ip ON p.id_pedido = ip.id_pedido
-        WHERE p.id_pedido = v_id_pedido;
-    ELSE
-        SELECT NULL; -- null se nao tuver pedido
-    END IF;
-
-END //
-DELIMITER ; 
-
-call spObterItensPedidoPorID(1);
-DELIMITER //
-CREATE PROCEDURE spObterItensPedidoPorID(IN p_id_cliente INT)
-BEGIN
-    DECLARE v_id_pedido INT;
-    DECLARE v_valor_total DECIMAL(10,2);
-
-    -- pegar o id_pedido e valor_total do pedido mais recente
-    SELECT id_pedido, valor_total 
-    INTO v_id_pedido, v_valor_total
-    FROM pedidos 
-    WHERE id_cliente = p_id_cliente
-    ORDER BY id_pedido DESC -- ordem decrescente para pegar o pedido mais recente
-    LIMIT 1; 
-
-    -- se existir o pedido retorna os itens e detalhes do carro
-    IF v_id_pedido IS NOT NULL THEN
-        SELECT p.id_pedido, p.id_cliente, p.data_pedido, v_valor_total AS ValorTotal, 
-               ip.id_item_pedido, ip.id_carro, ip.quantidade, ip.preco_unitario,
-               c.modelo, c.marca, c.ano, c.preco AS preco_carro, c.imagem, c.cor
-        FROM pedidos p
-        INNER JOIN itens_pedidos ip ON p.id_pedido = ip.id_pedido
-        INNER JOIN carros c ON ip.id_carro = c.id_carro
-        WHERE p.id_pedido = v_id_pedido;
-    ELSE
-        SELECT NULL; -- null se nao tiver pedido
-    END IF;
-
-END //
-DELIMITER ; 
-
-drop procedure spObterItensPedidoPorID; */
-select * from pedidos;
-
-call spObterItensPedidoPorID(1);
 DELIMITER //
 CREATE PROCEDURE spObterItensPedidoPorID(IN p_id_cliente INT)
 BEGIN
@@ -707,25 +540,6 @@ BEGIN
 END &&
 DELIMITER ;
 
--- testes de inserir cartao
-CALL spInsertCartao(
-    1,                  
-    '1234567812345678', 
-    'Peter Parker',      
-    '12/25',            
-    '123',              
-    'Visa'             
-);
-
-CALL spInsertCartao(
-    2,                 
-    '8765432187654321', 
-    'Geralt of Rivia',      
-    '11/26',            
-    '456',              
-    'MasterCard'        
-);
-
 -- procedures endereco
 delimiter &&
 create procedure spinsertBairro(vBairro varchar (200))
@@ -737,8 +551,6 @@ IF NOT EXISTS  (select Bairro from tbBairro WHERE Bairro = vBairro) then
         end if;
 end &&
 
--- call spinsertBairro('Morumbi');
-
 delimiter &&
 create procedure spinsertEstado(vUF char (2))
 begin
@@ -749,8 +561,6 @@ IF NOT EXISTS  (select UF from tbEstado where UF = vUF) then
         end if;
 end &&
 
--- call spinsertEstado('SP'); 
-
 delimiter &&
 create procedure spinsertCidade(vCidade varchar (200))
 begin
@@ -760,8 +570,6 @@ begin
         values(default,vCidade);
         end if;
 end &&
-
--- call spinsertCidade('São Paulo'); 
 
 delimiter && 
 create procedure spinsertendereco(vCEP numeric(8), vLogradouro varchar(200), vBairro varchar(200), vCidade varchar(200), vUF char(2)) 
@@ -786,30 +594,15 @@ end if;
 	end if;
 end &&
 
--- call spinsertendereco(12345050, 'Av. Paulista', 'São Paulo', 'São Paulo', 'SP');
-
--- procedures do carro
-/*
 DELIMITER $$
 CREATE PROCEDURE ExibirCarros()
 BEGIN
-    SELECT c.id_carro, c.modelo, c.marca, c.ano, c.preco, cat.descricao AS categoria, c.carregador
-    FROM carros c
-    JOIN categorias cat ON c.id_categoria = cat.id_categoria;
-END $$
-*/
-
-DELIMITER $$
-CREATE PROCEDURE ExibirCarros()
-BEGIN
-    SELECT c.id_carro, c.modelo, c.marca, c.ano, c.preco, cat.descricao AS categoria, c.carregador
+    SELECT c.id_carro, c.modelo, c.marca, c.ano, c.preco, cat.descricao AS categoria, c.carregador, c.imagem
     FROM carros c
     JOIN categorias cat ON c.id_categoria = cat.id_categoria
     WHERE c.status_carro = 'sob demanda';
 END $$
 DELIMITER ;
-
-CALL ExibirCarros();
 
 DELIMITER $$
 CREATE PROCEDURE ExibirDetalhesCarro(IN p_id_carro INT)
@@ -830,10 +623,7 @@ BEGIN
     WHERE c.id_carro = p_id_carro;
 END $$
 
--- call ExibirDetalhesCarro(1);
-
 -- procedures de entrega
-
 DELIMITER //
 CREATE PROCEDURE spInsertEntrega(
     IN vIdPedido INT,
@@ -878,8 +668,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- CALL spInsertEntrega(1, 1, 12385050, 'av kaer morhen', 'Lapa', 'São Paulo', 'SP');
-
 DELIMITER //
 CREATE PROCEDURE spObterEnderecoEntregaPorPedido(IN p_id_pedido INT)
 BEGIN
@@ -897,11 +685,6 @@ BEGIN
     WHERE e.IdPedido = p_id_pedido;
 END //
 DELIMITER ;
-
-call spObterEnderecoEntregaPorPedido(1);
-
--- procedures do test drive
--- CALL InserirTestDrive(1, 2, '2024-10-09 17:00:00');
 
 DELIMITER //
 CREATE PROCEDURE InserirTestDrive(
@@ -941,7 +724,6 @@ BEGIN
 END //
 DELIMITER ;
 
-call spExibirTestDrive(1, 1);
 DELIMITER //
 CREATE PROCEDURE spExibirTestDrive(IN p_id_cliente INT, IN p_id_test INT)
 BEGIN
@@ -964,6 +746,34 @@ BEGIN
         AND td.id_test = p_id_test;
 END //
 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE spObterItensPedidoPorID2(IN p_id_pedido INT)
+BEGIN
+    DECLARE v_valor_total DECIMAL(10,2);
+    DECLARE v_status_pedido VARCHAR(50);
+
+    -- pegar o valor_total e status_pedido do pedido especifico
+    SELECT valor_total, status_pedido 
+    INTO v_valor_total, v_status_pedido
+    FROM pedidos 
+    WHERE id_pedido = p_id_pedido; 
+
+    -- se existir o pedido retorna os itens e detalhes do carro
+    IF v_valor_total IS NOT NULL THEN
+        SELECT p.id_pedido, p.id_cliente, p.data_pedido, v_valor_total AS ValorTotal, v_status_pedido AS StatusPedido,
+               ip.id_item_pedido, ip.id_carro, ip.quantidade, ip.preco_unitario,
+               c.modelo, c.marca, c.ano, c.preco AS preco_carro, c.imagem, c.cor
+        FROM pedidos p
+        INNER JOIN itens_pedidos ip ON p.id_pedido = ip.id_pedido
+        INNER JOIN carros c ON ip.id_carro = c.id_carro
+        WHERE p.id_pedido = p_id_pedido;
+    ELSE
+        SELECT NULL; -- null se nao tiver pedido
+    END IF;
+
+END //
 DELIMITER ;
 
 DELIMITER //
@@ -1010,7 +820,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
 DELIMITER &&
 CREATE PROCEDURE spObterClientePorEmail(
     vEmail VARCHAR(150)
@@ -1042,8 +851,7 @@ BEGIN
 END &&
 DELIMITER ;
 
-
-select * from clientes;
+-- criação da tabela de historico dos clientes
 CREATE TABLE histClientes (
     id_cliente INT,
     nome VARCHAR(100) NOT NULL,
@@ -1061,91 +869,6 @@ CREATE TABLE histClientes (
     statusConta ENUM('atualizado', 'excluido') DEFAULT 'atualizado',
     FOREIGN KEY (CepCli) REFERENCES tbEndereco(CEP)
 );
-
-DELIMITER //
-CREATE TRIGGER trgRegistrarExclusaoCliente
-AFTER UPDATE ON clientes
-FOR EACH ROW
-BEGIN
-    IF OLD.status_conta <> 'excluida' AND NEW.status_conta = 'excluida' THEN
-        INSERT INTO histClientes (
-            id_cliente, 
-            nome, 
-            sobrenome, 
-            email, 
-            senha, 
-            telefone, 
-            tipo_cliente, 
-            data_cadastro, 
-            CepCli, 
-            NumEnd, 
-            CompEnd, 
-            nivel_acesso, 
-            statusConta,
-            cpf_cnpj 
-        )
-        VALUES (
-            OLD.id_cliente, 
-            OLD.nome, 
-            OLD.sobrenome, 
-            OLD.email, 
-            OLD.senha, 
-            OLD.telefone, 
-            OLD.tipo_cliente, 
-            OLD.data_cadastro, 
-            OLD.CepCli, 
-            OLD.NumEnd, 
-            OLD.CompEnd, 
-            OLD.nivel_acesso, 
-            'excluído', 
-            OLD.cpf_cnpj  
-        );
-    END IF;
-END; //
-DELIMITER ;
-
-
-select * from histClientes;
-
-DELIMITER //
-CREATE TRIGGER trgRegistrarAtualizacaoCliente
-AFTER UPDATE ON clientes
-FOR EACH ROW
-BEGIN
-    INSERT INTO histClientes (
-        id_cliente, 
-        nome, 
-        sobrenome, 
-        email, 
-        senha, 
-        telefone, 
-        tipo_cliente, 
-        data_cadastro, 
-        CepCli, 
-        NumEnd, 
-        CompEnd, 
-        nivel_acesso, 
-        statusConta,
-        cpf_cnpj  
-    )
-    VALUES (
-        OLD.id_cliente, 
-        OLD.nome, 
-        OLD.sobrenome, 
-        OLD.email, 
-        OLD.senha, 
-        OLD.telefone, 
-        OLD.tipo_cliente, 
-        OLD.data_cadastro, 
-        OLD.CepCli, 
-        OLD.NumEnd, 
-        OLD.CompEnd, 
-        OLD.nivel_acesso, 
-        'atualizado',  
-        OLD.cpf_cnpj  
-    );
-END; //
-DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE spInserirCarro(
@@ -1175,21 +898,6 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
--- teste carro novo
-CALL spInserirCarro(
-    'Model S',          
-    'Tesla',           
-    2023,              
-    75000.00,           
-    2,                 
-    'supercharger',     
-    'aaaaaa', 
-    'models.png',     
-    'Preto'            
-);
-
-select * from clientes;
 
 DELIMITER &&
 CREATE PROCEDURE spinsertAdmin(
@@ -1274,27 +982,6 @@ BEGIN
 END &&
 DELIMITER ;
 
-
--- teste inserção admin
-CALL spinsertAdmin(
-    'adm', 
-    'admin', 
-    'adm@gmail.com', 
-    'adm', 
-    999888777, 
-    'pf', 
-    12345678901,
-    98756723, 
-    234, 
-    'nenhum',
-    'Overhaul Concessionaria',
-    'Morumbi', 
-    'São Paulo', 
-    'SP'
-);
-select * from clientes;
-
-
 DELIMITER $$
 CREATE PROCEDURE ExcluirCarro(IN p_id_carro INT)
 BEGIN
@@ -1303,13 +990,6 @@ BEGIN
     WHERE id_carro = p_id_carro;
 END $$
 DELIMITER ;
-
-select * from carros;
--- call ExcluirCarro(4);
-
--- (9, 'i3', 'BMW', 2018, 80000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro..', 'imagens/i3.jpg', 'azul'); 
--- call spUpdateCarro (9, 'i3', 'BMW', 2018, 80000.00, 2, 'carregador', 'Praticidade e sustentabilidade em um só carro..', 'imagens/i3.jpg', 'vermelho');
-select * from carros;
 
 DELIMITER $$
 CREATE PROCEDURE spUpdateCarro(
@@ -1340,29 +1020,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-/*
-DELIMITER $$
-CREATE PROCEDURE MostrarTodosTestDrives()
-BEGIN
-    SELECT 
-        td.id_test,
-        c.nome AS cliente_nome,
-        c.cpf_cnpj AS cliente_cpf,
-        car.modelo AS carro_modelo,
-        car.marca AS carro_marca,
-        car.ano AS carro_ano,
-        td.data_test
-    FROM 
-        test_drive td
-    INNER JOIN 
-        clientes c ON td.id_cliente = c.id_cliente
-    INNER JOIN 
-        carros car ON td.id_carro = car.id_carro;
-END $$
-
-DELIMITER ;
-*/
-call MostrarTodosTestDrives();
 DELIMITER $$
 CREATE PROCEDURE MostrarTodosTestDrives()
 BEGIN
@@ -1384,11 +1041,6 @@ BEGIN
 END $$
 
 DELIMITER ;
-/*
-select * from test_drive;
-describe test_drive;
-describe clientes; */
-
 
 DELIMITER //
 CREATE PROCEDURE ObterTodosPedidosEItens ()
@@ -1418,37 +1070,6 @@ BEGIN
         p.id_pedido;
 END //
 
-DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER trgAlterarStatusPedido
-AFTER INSERT ON FormaPagamento
-FOR EACH ROW
-BEGIN
-    UPDATE pedidos
-    SET status_pedido = 'pagamento concluido'
-    WHERE id_pedido = NEW.id_pedido; 
-END; //
-DELIMITER ;
-
-DELIMITER //
-CREATE PROCEDURE spCancelarPedido(IN p_id_pedido INT, IN p_id_cliente INT)
-BEGIN
-    UPDATE pedidos
-    SET status_pedido = 'cancelado'
-    WHERE id_pedido = p_id_pedido AND id_cliente = p_id_cliente;
-END //
-DELIMITER ;
-
--- call spCancelarPedido(2, 1);
-
-DELIMITER $$
-CREATE PROCEDURE spAlterarStatusCarro(IN p_id_carro INT)
-BEGIN
-    UPDATE carros
-    SET status_carro = 'sob demanda'
-    WHERE id_carro = p_id_carro;
-END $$
 DELIMITER ;
 
 
@@ -1534,8 +1155,66 @@ END //
 
 DELIMITER ;
 
--- procedures de avaliação 
+DELIMITER //
+CREATE PROCEDURE spObterPedidosEItensCliente(
+    IN cliente_id INT
+)
+BEGIN
+    SELECT 
+        p.id_pedido,
+        p.data_pedido,
+        p.valor_total,
+        p.status_pedido,
+        i.id_item_pedido,
+        i.id_carro,
+        i.quantidade,
+        i.preco_unitario,
+        c.modelo AS modelo_carro,
+        c.marca AS marca_carro,
+        c.ano AS ano_carro,
+        c.cor AS cor_carro,
+        c.status_carro
+    FROM 
+        pedidos p
+    INNER JOIN 
+        itens_pedidos i ON p.id_pedido = i.id_pedido
+    INNER JOIN 
+        carros c ON i.id_carro = c.id_carro
+    WHERE 
+        p.id_cliente = cliente_id
+    ORDER BY 
+        p.data_pedido DESC;
+    
+END //
 
+DELIMITER ;
+
+-- test drive procedures
+DELIMITER $$
+CREATE PROCEDURE spMostrarTestDrivesPorCliente(IN cliente_id INT)
+BEGIN
+    SELECT 
+        td.id_test,
+        CONCAT(c.nome, ' ', c.sobrenome) AS cliente_nome,
+        c.cpf_cnpj AS cliente_cpf,
+        car.modelo AS carro_modelo,
+        car.marca AS carro_marca,
+        car.ano AS carro_ano,
+        td.data_test,
+        td.status_test
+    FROM 
+        test_drive td
+    INNER JOIN 
+        clientes c ON td.id_cliente = c.id_cliente
+    INNER JOIN 
+        carros car ON td.id_carro = car.id_carro
+    WHERE 
+        td.id_cliente = cliente_id;
+END $$
+
+DELIMITER ;
+
+-- avaliacao procedures
 DELIMITER //
 CREATE PROCEDURE spInserirAvaliacao(
     IN p_id_pedido INT,
@@ -1548,7 +1227,6 @@ BEGIN
     VALUES (p_id_cliente, p_id_pedido, p_avaliacao_escrita, p_avaliacao_nota, NOW());
 END //
 DELIMITER ;
-
 
 DELIMITER //
 CREATE PROCEDURE spObterAvaliacaoPorPedido(IN p_id_pedido INT)
@@ -1579,27 +1257,173 @@ BEGIN
 END //
 DELIMITER ;
 
-DELIMITER $$
-CREATE PROCEDURE spMostrarTestDrivesPorCliente(IN cliente_id INT)
+DELIMITER //
+CREATE PROCEDURE spObterFormaPagamentoPorPedido(
+    IN pedido_id INT
+)
 BEGIN
-    SELECT 
-        td.id_test,
-        CONCAT(c.nome, ' ', c.sobrenome) AS cliente_nome,
-        c.cpf_cnpj AS cliente_cpf,
-        car.modelo AS carro_modelo,
-        car.marca AS carro_marca,
-        car.ano AS carro_ano,
-        td.data_test,
-        td.status_test
-    FROM 
-        test_drive td
-    INNER JOIN 
-        clientes c ON td.id_cliente = c.id_cliente
-    INNER JOIN 
-        carros car ON td.id_carro = car.id_carro
-    WHERE 
-        td.id_cliente = cliente_id;
-END $$
+    SELECT id_pedido AS id_pagamento, forma_pagamento
+    FROM FormaPagamento
+    WHERE id_pedido = pedido_id;
+END;
+delimiter ;
 
+
+DELIMITER //
+CREATE PROCEDURE spObterFormaPagamentoPorPedido(
+    IN pedido_id INT
+)
+BEGIN
+    SELECT id_pedido AS id_pagamento, forma_pagamento
+    FROM FormaPagamento
+    WHERE id_pedido = pedido_id;
+END;
+delimiter ;
+
+DELIMITER //
+CREATE PROCEDURE spObterFormaPagamento(
+    IN pedido_id INT
+)
+BEGIN
+    SELECT id_pedido AS id_pagamento, forma_pagamento
+    FROM FormaPagamento
+    WHERE id_pedido = pedido_id;
+END;
+delimiter ;
+
+-- triggers!!
+
+DELIMITER //
+CREATE TRIGGER trgAlterarStatusPedido
+AFTER INSERT ON FormaPagamento
+FOR EACH ROW
+BEGIN
+    UPDATE pedidos
+    SET status_pedido = 'pagamento concluido'
+    WHERE id_pedido = NEW.id_pedido; 
+END; //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE spCancelarPedido(IN p_id_pedido INT, IN p_id_cliente INT)
+BEGIN
+    UPDATE pedidos
+    SET status_pedido = 'cancelado'
+    WHERE id_pedido = p_id_pedido AND id_cliente = p_id_cliente;
+END //
+DELIMITER ;
+
+-- call spCancelarPedido(2, 1);
+
+DELIMITER $$
+CREATE PROCEDURE spAlterarStatusCarro(IN p_id_carro INT)
+BEGIN
+    UPDATE carros
+    SET status_carro = 'sob demanda'
+    WHERE id_carro = p_id_carro;
+END $$
+DELIMITER ;
+
+
+select * from carros;
+
+
+DELIMITER //
+CREATE TRIGGER trgRegistrarExclusaoCliente
+AFTER UPDATE ON clientes
+FOR EACH ROW
+BEGIN
+    IF OLD.status_conta <> 'excluida' AND NEW.status_conta = 'excluida' THEN
+        INSERT INTO histClientes (
+            id_cliente, 
+            nome, 
+            sobrenome, 
+            email, 
+            senha, 
+            telefone, 
+            tipo_cliente, 
+            data_cadastro, 
+            CepCli, 
+            NumEnd, 
+            CompEnd, 
+            nivel_acesso, 
+            statusConta,
+            cpf_cnpj 
+        )
+        VALUES (
+            OLD.id_cliente, 
+            OLD.nome, 
+            OLD.sobrenome, 
+            OLD.email, 
+            OLD.senha, 
+            OLD.telefone, 
+            OLD.tipo_cliente, 
+            OLD.data_cadastro, 
+            OLD.CepCli, 
+            OLD.NumEnd, 
+            OLD.CompEnd, 
+            OLD.nivel_acesso, 
+            'excluído', 
+            OLD.cpf_cnpj  
+        );
+    END IF;
+END; //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER trgRegistrarAtualizacaoCliente
+AFTER UPDATE ON clientes
+FOR EACH ROW
+BEGIN
+    INSERT INTO histClientes (
+        id_cliente, 
+        nome, 
+        sobrenome, 
+        email, 
+        senha, 
+        telefone, 
+        tipo_cliente, 
+        data_cadastro, 
+        CepCli, 
+        NumEnd, 
+        CompEnd, 
+        nivel_acesso, 
+        statusConta,
+        cpf_cnpj  
+    )
+    VALUES (
+        OLD.id_cliente, 
+        OLD.nome, 
+        OLD.sobrenome, 
+        OLD.email, 
+        OLD.senha, 
+        OLD.telefone, 
+        OLD.tipo_cliente, 
+        OLD.data_cadastro, 
+        OLD.CepCli, 
+        OLD.NumEnd, 
+        OLD.CompEnd, 
+        OLD.nivel_acesso, 
+        'atualizado',  
+        OLD.cpf_cnpj  
+    );
+END; //
+DELIMITER ; -- essa trigger nao é mais utilizada!! 
+
+-- inserção de 1 adm para testes (unica inserção no codigo)
+CALL spinsertAdmin(
+    'ADM', 
+    'administrador', 
+    'adm@overhaul.com', 
+    'adm', 
+    36765436, 
+    'pj', 
+    42505789000182,
+    98756723, 
+    2967, 
+    'concessionaria',
+    'Overhaul Concessionaria',
+    'Morumbi', 
+    'São Paulo', 
+    'SP'
+);
